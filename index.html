@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Pauliskolan – Digitalt skolkort</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f2a43">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=6">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<main class="main-container">
+
+    <!-- Inloggning -->
+    <section id="loginPage" class="tag">
+        <div class="tag-top"><span class="slot"></span><span class="school">Pauliskolan</span></div>
+        <div class="tag-body">
+            <h1>Digitalt skolkort</h1>
+            <p class="lead">Logga in med ditt elev-ID för att visa kortet vid dörren.</p>
+            <form id="loginForm">
+                <label for="studentId">Elev-ID</label>
+                <input type="text" id="studentId" placeholder="12987" required autocomplete="username" inputmode="numeric">
+                <label for="password">Lösenord</label>
+                <input type="password" id="password" required autocomplete="current-password">
+                <label class="check" for="rememberMe"><input type="checkbox" id="rememberMe" checked> Kom ihåg mig på den här enheten</label>
+                <button type="submit" class="btn btn-primary">Logga in</button>
+            </form>
+            <div id="loginError" class="error-message" role="alert"></div>
+        </div>
+    </section>
+
+    <!-- Skolkort -->
+    <section id="cardPage" class="tag hidden">
+        <div class="tag-top"><span class="slot"></span><span class="school">Pauliskolan</span></div>
+        <div class="offline-banner" role="status">Ingen uppkoppling. Kortet gäller inte vid dörren, visa det för manuell kontroll.</div>
+
+        <div class="pass-white-body">
+            <div class="who">
+                <div class="student-photo-container"><img id="studentPhoto" src="" alt="Elevfoto"></div>
+                <div>
+                    <span id="studentName" class="name">Laddar…</span>
+                    <span id="authorizationStatus" class="status-pill">Behörig</span>
+                </div>
+            </div>
+            <dl class="facts">
+                <div><dt>Elev-ID</dt><dd id="displayStudentId">-</dd></div>
+                <div><dt>Kort-ID</dt><dd id="cardId">-</dd></div>
+                <div><dt>Senast inne</dt><dd id="lastAccessTime">Hämtar…</dd></div>
+            </dl>
+        </div>
+
+        <div class="perforation" aria-hidden="true"></div>
+
+        <div class="door">
+            <div id="qrContainer" class="qr-code-frame hidden">
+                <div id="qrcode"></div>
+                <p class="qr-instruction"><span class="live-dot"></span>Håll mot läsaren vid dörren</p>
+            </div>
+            <button id="useCardButton" class="btn btn-primary">Visa skolkort vid dörren</button>
+            <div id="accessMessage" class="live-timer-text" aria-live="polite"></div>
+            <div class="row">
+                <button id="appleWalletBtn" class="btn btn-ghost">Apple Wallet</button>
+                <button id="logoutButton" class="btn btn-ghost">Logga ut</button>
+            </div>
+        </div>
+    </section>
+
+</main>
+<script src="script.js"></script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    }
+</script>
+</body>
+</html>
